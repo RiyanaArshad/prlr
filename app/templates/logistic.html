@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Logistic Regression - Car Price Prediction{% endblock %}
+
+{% block page_title %}Logistic Regression - Price Category Prediction{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <form id="logisticForm">
+            <div class="mb-3">
+                <label for="car_age" class="form-label">Car Age (years)</label>
+                <input type="number" class="form-control" id="car_age" name="car_age" min="0" max="25" required>
+            </div>
+            <div class="mb-3">
+                <label for="mileage" class="form-label">Mileage (kilometers)</label>
+                <input type="number" class="form-control" id="mileage" name="mileage" min="0" max="300000" required>
+            </div>
+            <div class="mb-3">
+                <label for="brand" class="form-label">Brand</label>
+                <select class="form-select" id="brand" name="brand" required>
+                    <option value="">Select a brand</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Toyota">Toyota</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="fuel_type" class="form-label">Fuel Type</label>
+                <select class="form-select" id="fuel_type" name="fuel_type" required>
+                    <option value="">Select a fuel type</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Hybrid">Hybrid</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="transmission" class="form-label">Transmission</label>
+                <select class="form-select" id="transmission" name="transmission" required>
+                    <option value="">Select transmission type</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="Manual">Manual</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict Price Category</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div id="predictionResult" class="prediction-result">
+            <h4>Prediction Result</h4>
+            <p>The predicted price category is: <span id="category" class=""></span></p>
+            <div id="explanation">
+                <p>The logistic regression model analyzes multiple car features to classify the car price as either high or low.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $('#logisticForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                car_age: $('#car_age').val(),
+                mileage: $('#mileage').val(),
+                brand: $('#brand').val(),
+                fuel_type: $('#fuel_type').val(),
+                transmission: $('#transmission').val()
+            };
+            
+            $.ajax({
+                type: 'POST',
+                url: '/predict_logistic',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    $('#predictionResult').show();
+                    
+                    const category = response.category;
+                    $('#category').text(category);
+                    
+                    if (category === 'High') {
+                        $('#category').removeClass('low-price').addClass('high-price');
+                    } else {
+                        $('#category').removeClass('high-price').addClass('low-price');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while making the prediction. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

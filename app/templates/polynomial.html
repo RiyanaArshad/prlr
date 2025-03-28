@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Polynomial Regression - Car Price Prediction{% endblock %}
+
+{% block page_title %}Polynomial Regression - Exact Price Prediction{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <form id="polynomialForm">
+            <div class="mb-3">
+                <label for="car_age" class="form-label">Car Age (years)</label>
+                <input type="number" class="form-control" id="car_age" name="car_age" min="0" max="25" required>
+                <div class="form-text">Enter the age of the car in years.</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict Price</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div id="predictionResult" class="prediction-result">
+            <h4>Prediction Result</h4>
+            <p>The predicted price is: $<span id="price" class="high-price"></span></p>
+            <div id="explanation">
+                <p>The polynomial regression model uses a degree 3 polynomial to predict the exact car price based solely on the car's age.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">About Polynomial Regression</h5>
+                <p>Polynomial regression fits a nonlinear relationship between the value of age and the corresponding price.</p>
+                <p>While our model uses only car age as a predictor, in the real world, car price depends on many other factors including brand, condition, mileage, and features.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $('#polynomialForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                car_age: $('#car_age').val()
+            };
+            
+            $.ajax({
+                type: 'POST',
+                url: '/predict_polynomial',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    $('#predictionResult').show();
+                    
+                    const price = response.prediction;
+                    const formattedPrice = Math.abs(price).toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    
+                    $('#price').text(formattedPrice);
+                    
+                    if (price < 0) {
+                        $('#price').removeClass('high-price').addClass('low-price');
+                        $('#price').text('-' + formattedPrice);
+                    } else {
+                        $('#price').removeClass('low-price').addClass('high-price');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while making the prediction. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

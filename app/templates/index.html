@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Car Price Prediction{% endblock %}
+
+{% block page_title %}Welcome to Car Price Prediction System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Logistic Regression Model</h5>
+                <p class="card-text">Predict whether a car's price is high or low based on Car Age, Mileage, Brand, Fuel Type, and Transmission.</p>
+                <a href="/logistic" class="btn btn-primary">Go to Logistic Regression</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Polynomial Regression Model</h5>
+                <p class="card-text">Predict the exact price of a car based solely on Car Age using polynomial regression.</p>
+                <a href="/polynomial" class="btn btn-primary">Go to Polynomial Regression</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">About This Project</h5>
+                <p>This project implements two regression models for car price prediction:</p>
+                <ul>
+                    <li><strong>Logistic Regression:</strong> Classifies whether a car's price is high or low based on multiple factors.</li>
+                    <li><strong>Polynomial Regression:</strong> Predicts the exact car price using Car Age as the independent variable.</li>
+                </ul>
+                <p>Both models are trained on a dataset of car information including age, mileage, brand, fuel type, and transmission.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
